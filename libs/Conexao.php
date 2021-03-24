@@ -18,7 +18,7 @@ class Conexao {
     public function ultimoInsertId() {
         //Windows
         if (DB_LIB == 'sqlsrv') {
-            return $this->pdo->lastInsertId();
+            //return $this->pdo->lastInsertId();
         }
         $this->where = [];
         $retorno = $this->getListar('SELECT LAST_INSERT_ID() AS ID');
@@ -116,7 +116,12 @@ class Conexao {
     }
 
     private function prepareExecute($sql, $dados = [], $listar = false) {
-        $acao = $this->pdo->prepare($sql);
+
+        $this->where = [];
+        $this->order = [];
+        $this->group = [];
+
+        $acao = $this->pdo->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
         $execute = $acao->execute($dados);
         $this->linhasTotal = $acao->rowCount();
         return ($listar ? $acao : $execute);

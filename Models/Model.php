@@ -36,6 +36,12 @@ class Model extends Conexao {
         if ($this->paginacao) {
             $inicio = (coalesce(@$_GET['pagina'], 1) - 1) * $this->pagina_total;
             $limit = " LIMIT $inicio,$this->pagina_total ";
+            if (ehSqlServer()) {
+                if (!$this->order) {
+                    $this->addOrder("$this->ID_CHAVE DESC");
+                }
+                $limit = " OFFSET $inicio ROWS FETCH NEXT $this->pagina_total ROWS ONLY ";
+            }
         }
         $retorno = $this->getListar($sql, true, $limit);
         if ($retorno && $this->keyChave) {

@@ -3,6 +3,6 @@
 class LoginModel extends Model {
 
     public $tabela = 'USUARIO';
-    public $chave = 'ID_USUARIO';
+    public $ID_CHAVE = 'ID_USUARIO';
 
 }

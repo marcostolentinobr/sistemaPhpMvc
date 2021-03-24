@@ -12,23 +12,15 @@ function iniciar() {
     define('CHAVE', isset($url[2]) ? $url[2] : '');
 
     //DIRETORIO RAIZ
-    define('RAIZ', str_replace('\libs', '', __DIR__));
+    define('RAIZ', str_replace('/libs', '',str_replace('\libs', '', __DIR__)));
 
     //URL
-    $protocolo = (strpos(strtolower($_SERVER['SERVER_PROTOCOL']), 'https') === false) ? 'http' : 'https';
-    $url = $protocolo . '://' . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+    $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
     define('URL', $url);
     define('URL_ATUAL', URL . CLASSE . '/' . METODO);
 
     require_once 'Conexao.php';
 
-    //Caso não exista usuario logado, logue antes
-    if (@!$_SESSION['USUARIO'] && CLASSE != 'Login') {
-        //Pode acessar a classe usuário para cadastrar algum
-        if (CLASSE != 'Usuario') {
-            header('Location: ' . URL . 'Login/acessar');
-        }
-    }
 }
 
 function ehSqlServer() {

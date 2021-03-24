@@ -8,6 +8,14 @@
 <center>
     <BR>
     <?
+    //Caso não exista usuario logado, logue antes
+    if (@!$_SESSION['USUARIO'] && CLASSE != 'Login') {
+        //Pode acessar a classe usuário para cadastrar algum
+        if (CLASSE != 'Usuario') {
+            header('Location: ' . URL . 'Login/acessar');
+        }
+    }
+
     require_once 'Views/viewMenu.php';
     echo '<BR>';
     require_once 'Views/viewConteudo.php';

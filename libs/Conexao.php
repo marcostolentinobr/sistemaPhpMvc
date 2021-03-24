@@ -40,7 +40,11 @@ class Conexao {
         }
     }
 
-    protected function getListar($sql, $todos = true, $sulfixo = '') {
+    public function addOrder($coluna) {
+        $this->order[] = $coluna;
+    }
+
+    public function getListar($sql, $sulfixo = '') {
         if (!is_array($sql)) {
             $sql = array($sql);
         }
@@ -54,16 +58,23 @@ class Conexao {
             $sql[] = sprintf(" \n ORDER BY %s ", implode(" , \n ", $this->order));
         }
         $sql = implode(' ', $sql);
-        $acao = $this->prepareExecute("$sql $sulfixo", [], $todos);
+        $acao = $this->prepareExecute("$sql $sulfixo", [], true);
 
         $this->where = [];
         $this->order = [];
         $this->group = [];
 
-        if ($todos) {
-            return $acao->fetchAll(PDO::FETCH_ASSOC);
+        $retorno = $acao->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($retorno as $ind => $valor) {
+            if (DB_CONVERTE_UTF8) {
+                $retorno[$ind] = array_map('utf8_encode', $valor);
+            } else {
+                $retorno[$ind] = $valor;
+            }
         }
-        return $acao;
+
+        $this->linhasTotal = count($retorno);
+        return $retorno;
     }
 
     protected function incluir($tabela, $valores) {
@@ -122,8 +133,8 @@ class Conexao {
         $this->group = [];
 
         $acao = $this->pdo->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
+        //pr($acao);
         $execute = $acao->execute($dados);
-        $this->linhasTotal = $acao->rowCount();
         return ($listar ? $acao : $execute);
     }
 
@@ -139,7 +150,8 @@ class Conexao {
                     $ITEM['sintaxe'][] = "$coluna=:$coluna";
                 }
                 $key = ":$coluna";
-                $ITEM['valores'][$key] = $valor === 'NULL' ? null : $valor;
+                //$ITEM['valores'][$key] = $valor === 'NULL' ? null : $valor;
+                $ITEM['valores'][$key] = $valor === 'NULL' ? null : (DB_CONVERTE_UTF8 ? utf8_decode($valor) : '');
             }
         }
         return $ITEM;
@@ -147,10 +159,6 @@ class Conexao {
 
     private function addGroup($coluna) {
         $this->group[] = $coluna;
-    }
-
-    protected function addOrder($coluna) {
-        $this->order[] = $coluna;
     }
 
 }

@@ -12,6 +12,7 @@ class Model extends Conexao {
     public function __construct($pdo = '', $valorBuscar = '', $paginacao = true) {
         parent::__construct($pdo);
         $this->valorChave = @$_POST[$this->ID_CHAVE];
+        //pr($_POST);
         $this->valorBuscar = $valorBuscar;
         $this->paginacao = $paginacao;
     }
@@ -32,6 +33,13 @@ class Model extends Conexao {
 
     protected function listaRetorno($sql) {
         $this->setBuscarLista();
+        
+        //Orendação
+        if (isset($_GET['order'])) {
+            $campoOrder = explode('@', $_GET['order']);
+            $this->order = array_merge(["$campoOrder[0] $campoOrder[1]"], $this->order);
+        }
+        
         $limit = '';
         if ($this->paginacao) {
             $inicio = (coalesce(@$_GET['pagina'], 1) - 1) * $this->pagina_total;
@@ -43,7 +51,7 @@ class Model extends Conexao {
                 $limit = " OFFSET $inicio ROWS FETCH NEXT $this->pagina_total ROWS ONLY ";
             }
         }
-        $retorno = $this->getListar($sql, true, $limit);
+        $retorno = $this->getListar($sql, $limit);
         if ($retorno && $this->keyChave) {
             $retornoNovo = [];
             foreach ($retorno as $dado) {

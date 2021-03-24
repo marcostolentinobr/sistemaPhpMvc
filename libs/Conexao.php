@@ -16,12 +16,15 @@ class Conexao {
     }
 
     public function ultimoInsertId() {
-        //Windows
-        if (DB_LIB == 'sqlsrv') {
-            //return $this->pdo->lastInsertId();
-        }
         $this->where = [];
-        $retorno = $this->getListar('SELECT LAST_INSERT_ID() AS ID');
+
+        //Windows
+        if (DB_LIB == 'dblib') {
+            $retorno = $this->getListar('SELECT scope_identity() AS ID');
+            //return $this->pdo->lastInsertId();
+        } else {
+            $retorno = $this->getListar('SELECT LAST_INSERT_ID() AS ID');
+        }
         return $retorno[0]['ID'];
     }
 
@@ -151,7 +154,7 @@ class Conexao {
                 }
                 $key = ":$coluna";
                 //$ITEM['valores'][$key] = $valor === 'NULL' ? null : $valor;
-                $ITEM['valores'][$key] = $valor === 'NULL' ? null : (DB_CONVERTE_UTF8 ? utf8_decode($valor) : '');
+                $ITEM['valores'][$key] = $valor === 'NULL' ? null : (DB_CONVERTE_UTF8 ? utf8_decode($valor) : $valor);
             }
         }
         return $ITEM;

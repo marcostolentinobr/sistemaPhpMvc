@@ -33,6 +33,11 @@ class PessoaModel extends Model {
                 ON U.ID_USUARIO = P.ID_USUARIO
         ";
 
+        if (isset($_GET['order'])) {
+            $campoOrder = explode('@', $_GET['order']);
+            $this->addOrder("$campoOrder[0] $campoOrder[1]");
+        }
+
         $this->addOrder('FORMACAO_PONTOS DESC');
         $this->addOrder('C.NOME');
 

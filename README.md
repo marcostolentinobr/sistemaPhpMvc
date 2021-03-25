@@ -1,13 +1,12 @@
-# Exemplo de Sistema em MVC com PHP e Pdo
+# Exemplo de Sistema em MVC com PHP 
 
 ## Projeto  
 
-.Projeto de dicado a um pequeno sistema contêndo Login;  
-.Cadastro de Usuário com alteração de senha;  
-.Cadastro de Curso, Formação, Pessoa  
-.Ao cadastrar pessoa é vinculado curso e nenhum ou mais Formações;  
-.Envio de arquivos representando os títulos das formações (opcional);  
-.Apenas o usuário que cadastrou pode alterar pessoa;  
+.Sistema com crud e login em MVC com url amigavel e sessão;  
+.Manutenção de curso;  
+.Manutenção de formação;  
+.Manutenção de pessoa;  
+.Manutenção de usuário que cadastrar-ra curso, formação e pessoa;  
 
 
 ## Requisitos  
